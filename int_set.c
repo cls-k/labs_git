@@ -135,6 +135,7 @@ void int_set_destroy(int_set_t * set) {
 bool int_set_add(int_set_t * set,
                  int32_t     value) {
     bool    has_error = false;
+    bool    result = false;
     size_t  byte_idx = 0;
     uint8_t mask = 0;
 
@@ -158,17 +159,16 @@ bool int_set_add(int_set_t * set,
     }
     if (has_error == false) {
         set->bits[byte_idx] |= mask;
+        result = true;
     }
-    if (has_error != false) {
-        has_error = true;
-    }
-    return has_error;
+    return result;
 }
 
 //функция удаления элемента 
 bool int_set_rm(int_set_t * set, 
                 int32_t value) {
     bool    has_error = false;
+    bool    result = false;
     size_t  byte_idx = 0;
     uint8_t mask = 0;
 
@@ -192,11 +192,9 @@ bool int_set_rm(int_set_t * set,
     }
     if (has_error == false) {
         set->bits[byte_idx] &= ~mask;
+        result = true;
     }
-    if (has_error != false) {
-        has_error = true;
-    }
-    return has_error;
+    return result;
 }
 
 //функция проверки пренадлежности множества
@@ -230,9 +228,6 @@ bool int_set_contains(const   int_set_t * set,
             result = true;
         }
     }
-    if (has_error != false) {
-        result = false;
-    }
     return result;
 }
 
@@ -241,10 +236,7 @@ size_t int_set_cardinality(const int_set_t * set) {
     size_t count = 0;
     size_t iter = 0;
     uint8_t byte = 0;
-    if (is_valid_set(set) == false) {
-        count = 0;
-    }
-    if (count != 0) { 
+    if (is_valid_set(set) != false) {
         for (iter = 0; iter < set->byte_count; iter++) {
             byte = set->bits[iter];
             while (byte != 0) {
@@ -374,13 +366,33 @@ int_set_t * int_set_symmetric_difference(const int_set_t * set1,
     return result;
 }
 
-//функция проверки на подмножество
+//функция проверки на подмножество (set1 ⊆ set2)
+bool int_set_is_subset(const int_set_t * set1,
+                       const int_set_t * set2) {
+    bool result = true;
+    bool has_error = false;
+    size_t iter = 0;
+    if (are_compatible(set1, set2) == false) {
+        has_error = true;
+        result = false;
+    }
+    if (has_error == false) {
+        for (iter = 0; iter < set1->byte_count; iter++) {
+            if ((set1->bits[iter] & ~set2->bits[iter]) != 0) {
+                result = false;
+            }
+        }
+    }
+    return result;
+}
+
+//функция проверки на строгое подмножество
 bool int_set_is_proper_subset(const int_set_t * set1,
                               const int_set_t * set2) {
     bool   result = false;
     bool   has_error = false;
     bool   is_subset = false;
-    bool   not_equal = false;
+    bool   is_equal = true;
     size_t iter = 0;
     if (are_compatible(set1, set2) == false) {
         has_error = true;
@@ -389,15 +401,14 @@ bool int_set_is_proper_subset(const int_set_t * set1,
         is_subset = int_set_is_subset(set1, set2);
     }
     if (has_error == false && is_subset == true) {
-        not_equal = true;
         for (iter = 0; iter < set1->byte_count; iter++) {
-            if (set1->bits[iter] == set2->bits[iter]) {
-                not_equal = false;
+            if (set1->bits[iter] != set2->bits[iter]) {
+                is_equal = false;
             }
         }
-    }
-    if (has_error == false && is_subset == true && not_equal == true) {
-        result = true;
+        if (is_equal == false) {
+            result = true;
+        }
     }
     return result;
 }
@@ -415,9 +426,6 @@ bool int_set_equals(const int_set_t * set1,
             result = true;
         }
     }
-    if (has_error != false) {
-        result = false;
-    }
     return result;
 }
 
@@ -427,46 +435,43 @@ void int_set_print(const int_set_t * set) {
     int32_t first = 1;
     if (set == NULL) {
         printf("NULL set\n");
-        return;
-    }
-    printf("{ ");
-    for (value = set->min_value; value <= set->max_value; value++) {
-        if (int_set_contains(set, value) == true) {
-            if (first == 0) {
-                printf(", ");
+    } else {
+        printf("{ ");
+        for (value = set->min_value; value <= set->max_value; value++) {
+            if (int_set_contains(set, value) == true) {
+                if (first == 0) {
+                    printf(", ");
+                }
+                printf("%d", value);
+                first = 0;
             }
-            printf("%d", value);
-            first = 0;
         }
+        printf(" }\n");
     }
-    printf(" }\n");
 }
 
 //функция поиска минимального значения диапаона 
 int32_t int_set_min(const int_set_t * set) {
-    int result = set->min_value;
-    if (set == NULL) {
-        result = 0;
+    int32_t result = 0;
+    if (set != NULL) {
+        result = set->min_value;
     }
     return result;
 }
 
 //функция поиска максимального значения диапазона 
 int32_t int_set_max(const int_set_t * set) {
-    int result = set->max_value;
-    if (set == NULL) {
-        result = 0;
+    int32_t result = 0;
+    if (set != NULL) {
+        result = set->max_value;
     }
     return result;
 }
 
 //функция поиска байт в битовом пространстве 
 size_t int_set_byte_count(const int_set_t * set) {
-    int result = 0;
-    if (set == NULL) {
-        result = 0;
-    }
-    if (result != 0) { 
+    size_t result = 0;
+    if (set != NULL) {
         result = set->byte_count;
     }
     return result;
@@ -481,10 +486,9 @@ void int_set_clear(int_set_t * set) {
 
 //функция проверки множества на пустоту
 bool int_set_is_empty(const int_set_t * set) {
-    size_t result = 0;
-    result = int_set_cardinality(set);
-    if (result == 0) {
-        result = false;
+    bool result = false;
+    if (int_set_cardinality(set) == 0) {
+        result = true;
     }
     return result;
 }
