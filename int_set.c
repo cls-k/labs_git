@@ -164,3 +164,124 @@ bool int_set_add(int_set_t * set,
     }
     return has_error;
 }
+
+//функция удаления элемента 
+bool int_set_rm(int_set_t * set, 
+                int32_t value) {
+    bool    has_error = false;
+    size_t  byte_idx = 0;
+    uint8_t mask = 0;
+
+    if (is_valid_set(set) == false) {
+        has_error = true;
+    }
+    if (has_error == false) {
+        if (is_valid_value(set, value) == false) {
+            has_error = true;
+        }
+    }
+    if (has_error == false) {
+        if (value_to_bit_position(set, value, &byte_idx, &mask) == false) {
+            has_error = true;
+        }
+    }
+    if (has_error == false) {
+        if (byte_idx >= set->byte_count) {
+            has_error = true;
+        }
+    }
+    if (has_error == false) {
+        set->bits[byte_idx] &= ~mask;
+    }
+    if (has_error != false) {
+        has_error = true;
+    }
+    return has_error;
+}
+
+//функция проверки пренадлежности множества
+bool int_set_contains(const   int_set_t * set, 
+                      int32_t value) {
+    bool    has_error = false;
+    bool    result = false;
+    size_t  byte_idx = 0;
+    uint8_t mask = 0;
+
+    if (is_valid_set(set) == false) {
+        has_error = true;
+    }
+    if (has_error == false) {
+        if (is_valid_value(set, value) == false) {
+            has_error = true;
+        }
+    }
+    if (has_error == false) {
+        if (value_to_bit_position(set, value, &byte_idx, &mask) == false) {
+            has_error = true;
+        }
+    }
+    if (has_error == false) {
+        if (byte_idx >= set->byte_count) {
+            has_error = true;
+        }
+    }
+    if (has_error == false) {
+        if ((set->bits[byte_idx] & mask) != 0) {
+            result = true;
+        }
+    }
+    if (has_error != false) {
+        result = false;
+    }
+    return result;
+}
+
+//функция поиска мощности множества
+size_t int_set_cardinality(const int_set_t * set) {
+    size_t count = 0;
+    size_t iter = 0;
+    uint8_t byte = 0;
+    if (is_valid_set(set) == false) {
+        count = 0;
+    }
+    if (count != 0) { 
+        for (iter = 0; iter < set->byte_count; iter++) {
+            byte = set->bits[iter];
+            while (byte != 0) {
+                count++;
+                byte &= (byte - 1);
+            }
+        }
+    }
+    return count;
+}
+
+//функция объеденения множеств 
+int_set_t * int_set_union(const int_set_t * set1,
+                          const int_set_t * set2) {
+    int_set_t * result = NULL;
+    bool        has_error = false;
+    size_t      iter = 0;
+    if (are_compatible(set1, set2) == false) {
+        has_error = true;
+    }
+    if (has_error == false) {
+        result = int_set_create(set1->min_value, set1->max_value);
+        if (result == NULL) {
+            has_error = true;
+        }
+    }
+    if (has_error == false) {
+        for (iter = 0; iter < set1->byte_count; iter++) {
+            result->bits[iter] = set1->bits[iter] | set2->bits[iter];
+        }
+    }
+    if (has_error != false) {
+        if (result != NULL)
+        {
+            int_set_destroy(result);
+            result = NULL;
+        }
+    }
+    return result;
+}
