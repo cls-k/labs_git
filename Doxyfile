@@ -1,0 +1,24 @@
+PROJECT_NAME           = "Int Set Library"
+PROJECT_BRIEF          = "C library for integer sets on compact bit array"
+
+OUTPUT_DIRECTORY       = docs
+
+INPUT                  = include src
+RECURSIVE              = YES
+
+GENERATE_HTML          = YES
+GENERATE_LATEX         = YES
+
+EXTRACT_ALL            = YES
+EXTRACT_PRIVATE        = NO
+EXTRACT_STATIC         = NO
+
+QUIET                  = NO
+WARNINGS               = YES
+WARN_IF_UNDOCUMENTED   = YES
+WARN_IF_DOC_ERROR      = YES
+
+OPTIMIZE_OUTPUT_FOR_C  = YES
+
+USE_PDFLATEX           = YES
+LATEX_CMD_NAME         = pdflatex
