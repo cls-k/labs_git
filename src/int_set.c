@@ -233,7 +233,7 @@ size_t int_set_cardinality(const int_set_t * set) {
     size_t count = 0;
     size_t iter = 0;
     uint8_t byte = 0;
-    if (is_valid_set(set) != false) {
+    if (is_valid_set(set)) {
         for (iter = 0; iter < set->byte_count; iter++) {
             byte = set->bits[iter];
             while (byte != 0) {
