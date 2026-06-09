@@ -17,7 +17,7 @@
 ## Структура проекта
 
 ```text
-rational_lab/
+labs_git/
 ├── include/
 │   └── int_set.h
 ├── src/
