@@ -204,6 +204,6 @@ int main(void) {
     test_equals();
     test_empty_clear();
     test_error_handling();
-    printf("\nвсе тесты завершены\n");
+    printf("все тесты завершены\n");
     return 0;
 }
