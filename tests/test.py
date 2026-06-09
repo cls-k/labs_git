@@ -1,3 +1,6 @@
+#!/usr/bin/env python3
+# tests/test_int_set.py - краткие тесты для библиотеки int_set
+
 import ctypes
 import os
 import sys
