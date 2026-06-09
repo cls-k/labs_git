@@ -25,9 +25,7 @@ rational_lab/
 ├── tests/
 │   ├── test.c
 │   └── test.py
-├── examples/
-│   └── main.c
+├── README.md
 ├── Makefile
 ├── Doxyfile
-├── README.md
 └── .gitignore
