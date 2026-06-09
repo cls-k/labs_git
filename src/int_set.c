@@ -85,9 +85,6 @@ int_set_t * int_set_create(int32_t min_value,
         if (num_bits_ll <= 0) {
             has_error = true;
         }
-        if (num_bits_ll > (int64_t)SIZE_MAX * 8) {
-            has_error = true;
-        }
     }
 
     if (has_error == false) {
