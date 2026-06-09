@@ -22,7 +22,7 @@ test: $(LIB_STATIC) #цель test зависит от статической б
 	./tests/test #запустить скомпилированный тест
 
 py-test: $(LIB_SHARED)
-	PYTHONPATH=. python3 tests/test_int_set.py # установить путь к .so и запустить питон тест
+	PYTHONPATH=. python3 tests/test.py # установить путь к .so и запустить питон тест
 
 clean:
 	rm -f $(LIB_OBJ) $(LIB_STATIC) $(LIB_SHARED) tests/test # удалить все сгенерированные файл
