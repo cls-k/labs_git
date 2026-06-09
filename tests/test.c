@@ -1,6 +1,6 @@
 // test.c - тестирование библиотеки int_set
 
-#include "int_set.h"
+#include "../include/int_set.h"
 #include <stdio.h>
 
 static void print_result(const char * name, int passed) {
