@@ -25,7 +25,7 @@ labs_git/
 ├── tests/
 │   ├── test.c
 │   └── test.py
-├── README.md
-├── Makefile
+├── .gitignore
 ├── Doxyfile
-└── .gitignore
+├── Makefile
+└── README.md
